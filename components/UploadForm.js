@@ -1,10 +1,11 @@
 // components/UploadForm.js
+
 import { useDropzone } from 'react-dropzone'
 import { useCallback, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
-export default function UploadForm() {
+export default function UploadForm({ onUploadSuccess }) {
   const [uploading, setUploading] = useState(false)
   const [message, setMessage] = useState(null)
 
@@ -23,7 +24,7 @@ export default function UploadForm() {
         .upload(filePath, file)
 
       if (uploadError) {
-        setMessage(`Error al subir ${file.name}`)
+        setMessage(`Error al subir ${file.name}: ${uploadError.message}`)
         console.error(uploadError)
         setUploading(false)
         return
@@ -39,17 +40,22 @@ export default function UploadForm() {
         .insert([{ nombre: file.name, url: publicUrl }])
 
       if (dbError) {
-        setMessage(`Subida fallida en base de datos`)
+        setMessage(`Subida fallida en base de datos: ${dbError.message}`)
         console.error(dbError)
         setUploading(false)
         return
       }
 
       setMessage(`Imagen "${file.name}" subida correctamente ✅`)
+
+      // 4. Llamar a la función del padre si existe
+      if (onUploadSuccess) {
+        onUploadSuccess()
+      }
     }
 
     setUploading(false)
-  }, [])
+  }, [onUploadSuccess])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
@@ -58,8 +64,8 @@ export default function UploadForm() {
       <div
         {...getRootProps()}
         className={`border-2 border-dashed p-10 text-center rounded ${
-          isDragActive ? 'bg-gray-100' : 'bg-white'
-        }`}
+            isDragActive ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'
+          }`}          
       >
         <input {...getInputProps()} />
         {isDragActive ? (

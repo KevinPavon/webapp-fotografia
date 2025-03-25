@@ -25,11 +25,11 @@ export default function Login() {
         <h2 className="text-2xl font-bold mb-4">Login Fotógrafo</h2>
         {error && <p className="text-red-500 mb-2">{error}</p>}
         <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border mb-4"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full px-4 py-2 rounded bg-white text-black"
         />
         <input
           type="password"

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabase'
 import useUser from '../lib/useUser'
 import { useEffect } from 'react'
+import { useRef } from 'react'
 import UploadForm from '../components/UploadForm'
 import AdminGallery from '../components/AdminGallery'
 
@@ -26,6 +27,8 @@ export default function Admin() {
     router.push('/login')
   }
 
+  const galleryRef = useRef()
+
   if (loading) return <p>Cargando...</p>
   if (!user) return null
 
@@ -39,8 +42,8 @@ export default function Admin() {
       >
         Cerrar sesión
       </button>     
-      <UploadForm />
-      <AdminGallery />
+      <UploadForm onUploadSuccess={() => galleryRef.current?.refresh()} />
+      <AdminGallery ref={galleryRef} />
     </div>
   )
 }
